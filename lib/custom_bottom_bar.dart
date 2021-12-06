@@ -15,7 +15,8 @@ class CustomBottomBar extends StatefulWidget {
 }
 
 class _CustomBottomBarState extends State<CustomBottomBar> {
-  List<String>? selectedCountList;
+  List<String> selectedCountList=[];
+  List<PointsListItem> filteredPoints=[];
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +121,14 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
                         }, onApplyButtonClick: (list) {
                           if (list != null) {
                             setState(() {
-                              selectedCountList = List.from(list);
+                              filteredPoints.clear();
+                              for (var element in pointsItems) {
+                                if(selectedCountList.contains(element.subType))
+                                  {
+                                    filteredPoints.add(element);
+                                  }
+                              }
+
                             });
                           }
                           Navigator.pop(context);
@@ -130,7 +138,7 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
                   SizedBox(
                     height: 200,
                     child: ListView(
-                      children: pointsItems,
+                      children: filteredPoints.isEmpty?pointsItems:filteredPoints,
                     ),
                   )
                 ],

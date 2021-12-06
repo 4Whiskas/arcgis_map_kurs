@@ -7,7 +7,7 @@ import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 List<List<PointsListItem>> points = [[], [], [], []];
-List<Marker> markers = [Marker(point: LatLng(47.2313, 39.7233), builder: (BuildContext){return SizedBox(width: 5,height: 5);})];
+List<Marker> markers = [];
 
 void savePoints() async {
   List<List<Map<String, dynamic>>> data = [];
@@ -37,20 +37,23 @@ void loadPoints() async {
   var jsonData = sh.getString('data');
   List<dynamic> tempData = jsonDecode(jsonData);
   List<List<dynamic>> tData = [];
-  tempData.forEach((element) {
+  for (var element in tempData) {
     tData.add(element);
-  });
+  }
   for (int i = 0; i < 4; i++) {
     List<PointsListItem> tempPointsList = [];
     for (var tMap in tData[i]) {
       Map<String, dynamic> map = tMap;
       PointsListItem point = PointsListItem(
-          imagePath: map['imgpath'],
-          label: map['label'],
-          address: map['address'],
-          time: map['time'],
-          description: map['description'],
-          coordinates: LatLng(map['latitude'], map['longitude']));
+        imagePath: map['imgpath'],
+        label: map['label'],
+        address: map['address'],
+        time: map['time'],
+        description: map['description'],
+        coordinates: LatLng(map['latitude'], map['longitude']),
+        subType: map['subType'],
+        type: 'type',
+      );
       tempPointsList.add(point);
     }
     points[i] = tempPointsList;
@@ -60,10 +63,14 @@ void loadPoints() async {
 void fillMarkers() {
   for (var pointTypeList in points) {
     for (var pointType in pointTypeList) {
+      //print(pointType.coordinates);
       var tempMarker = Marker(
           point: pointType.coordinates,
+          height: 30,
+          width: 30,
           builder: (BuildContext context) {
-            return Image.asset(pointType.imagePath);
+            return SizedBox(
+                height: 30, width: 30, child: Image.asset(pointType.imagePath));
           });
       markers.add(tempMarker);
     }

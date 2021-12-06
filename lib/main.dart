@@ -12,6 +12,7 @@ import 'custom_bottom_bar.dart';
 
 main(){
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
       home: MyApp(),
     ));
 }
@@ -28,10 +29,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    setState(() {
-      loadPoints();
-      fillMarkers();
-    });
     super.initState();
   }
   @override
@@ -42,83 +39,87 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    setState(() {
+      loadPoints();
+      fillMarkers();
+    });
     return Scaffold(
       appBar: AppBar(title: const Text('ArcGIS')),
       body: FlutterMap(
         options: MapOptions(
             center: LatLng(47.2313, 39.7233),
             zoom: 16.0,
-            plugins: [EsriPlugin()],
             onLongPress: (point) => showDialog(
                 context: context,
                 builder: (context) {
                   return AlertDialog(
                     content: StatefulBuilder(
-                      builder: (BuildContext context, StateSetter setState) {
-                        return SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              TextField(
-                                controller: pointNameController,
-                                decoration: const InputDecoration(
-                                    label: Text("Название")),
-                              ),
-                              TextField(
-                                controller: pointDescriptionController,
-                                decoration: const InputDecoration(
-                                    label: Text("Описание")),
-                              ),
-                              TextField(
-                                controller: pointAddressController,
-                                decoration: const InputDecoration(
-                                    label: Text("Адресс")),
-                              ),
-                              SelectFormField(
-                                labelText: "Тип точки",
-                                type: SelectFormFieldType.dropdown,
-                                items: pointType,
-                                controller: pointTypeController,
-                                onChanged: (selectedType) {
-                                  switch (selectedType) {
-                                    case "remake":
-                                      setState(() {
-                                        index = 0;
-                                        imgPath = "images/recycling.png";
-                                        pointSubType = remakeType;
-                                      });
-                                      break;
-                                    case "trade":
-                                      setState(() {
-                                        index = 1;
-                                        imgPath = "images/trading.png";
-                                        pointSubType = tradeType;
-                                      });
-                                      break;
-                                    case "routes":
-                                      setState(() {
-                                        index = 2;
-                                        imgPath = "images/route.png";
-                                        pointSubType = routesType;
-                                      });
-                                      break;
-                                    case "events":
-                                      setState(() {
-                                        index = 3;
-                                        imgPath = "images/event.png";
-                                        pointSubType = eventType;
-                                      });
-                                      break;
-                                  }
-                                },
-                              ),
-                              SelectFormField(
-                                labelText: "Вид сдаваемого объекта",
-                                type: SelectFormFieldType.dropdown,
-                                items: pointSubType,
-                                controller: pointSubTypeController,
-                              ),
-                              ElevatedButton(
-                                  onPressed: () {
+                          builder: (BuildContext context, StateSetter setState) {
+                            return SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  TextField(
+                                    controller: pointNameController,
+                                    decoration: const InputDecoration(
+                                        label: Text("Название")),
+                                  ),
+                                  TextField(
+                                    controller: pointDescriptionController,
+                                    decoration: const InputDecoration(
+                                        label: Text("Описание")),
+                                  ),
+                                  TextField(
+                                    controller: pointAddressController,
+                                    decoration: const InputDecoration(
+                                        label: Text("Адресс")),
+                                  ),
+                                  SelectFormField(
+                                    labelText: "Тип точки",
+                                    type: SelectFormFieldType.dropdown,
+                                    items: pointType,
+                                    controller: pointTypeController,
+                                    onChanged: (selectedType) {
+                                      switch (selectedType) {
+                                        case "remake":
+                                          setState(() {
+                                            index = 0;
+                                            imgPath = "images/recycling.png";
+                                            pointSubType = remakeType;
+                                          });
+                                          break;
+                                        case "trade":
+                                          setState(() {
+                                            index = 1;
+                                            imgPath = "images/trading.png";
+                                            pointSubType = tradeType;
+                                          });
+                                          break;
+                                        case "routes":
+                                          setState(() {
+                                            index = 2;
+                                            imgPath = "images/route.png";
+                                            pointSubType = routesType;
+                                          });
+                                          break;
+                                        case "events":
+                                          setState(() {
+                                            index = 3;
+                                            imgPath = "images/event.png";
+                                            pointSubType = eventType;
+                                          });
+                                          break;
+                                      }
+                                    },
+                                  ),
+                                  SelectFormField(
+                                    labelText: "Вид сдаваемого объекта",
+                                    type: SelectFormFieldType.dropdown,
+                                    items: pointSubType,
+                                    controller: pointSubTypeController,
+                                  ),
+                                  ElevatedButton(
+                                      onPressed: () {
+                                        //print(point);
                                     var tempPoint = PointsListItem(
                                       imagePath: imgPath,
                                       label: pointNameController.text,
@@ -126,74 +127,41 @@ class _MyAppState extends State<MyApp> {
                                       time: "0:00",
                                       description: pointSubTypeController.text,
                                       coordinates: point,
+                                      subType: pointSubTypeController.text,
+                                      type: pointTypeController.text,
                                     );
                                     var tempMarker = Marker(
-                                      point: point,
-                                      builder: (BuildContext context){
-                                        return Image.asset(imgPath);
-                                      }
-                                    );
-                                    points[index].add(tempPoint);
-                                    savePoints();
-                                    setState(() {
-                                      markers.add(tempMarker);
-                                    });
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text("Создать"))
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                    title: const Text("Создание метки"),
-                    scrollable: true,
-                  );
-                })),
+                                        point: point,
+                                        builder: (BuildContext context){
+                                              return Image.asset(imgPath);
+                                            }
+                                        );
+                                        points[index].add(tempPoint);
+                                        savePoints();
+                                        setState(() {
+                                          markers.add(tempMarker);
+                                        });
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text("Создать"))
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                        title: const Text("Создание метки"),
+                        scrollable: true,
+                      );
+                    })),
         mapController: mapController,
         layers: [
-          MarkerLayerOptions(markers: [
-            Marker(builder: (BuildContext context){
-              return SizedBox(
-                height: 50,
-                width: 50,
-              );
-            }, point: LatLng(47.2313, 39.7233),)
-          ]),
           TileLayerOptions(
-            urlTemplate: 'http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
-            subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-            tileProvider: const CachedNetworkTileProvider(),
+            urlTemplate:
+                'https://ibasemaps-api.arcgis.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}?apiKey=AAPKaf3085f2feb642ca9087fd3573644bdc_QsFicjZgUdoP70nVMEMCnuAOMycXXTrmkJvc9IrED0PMOvrUnnOqHWKw6LKz3S3',
+            // subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+            // tileProvider: const CachedNetworkTileProvider(),
           ),
-          FeatureLayerOptions(
-            url:
-                "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/USA_Congressional_Districts/FeatureServer/0",
-            geometryType: "polygon",
-            onTap: (attributes, LatLng location) {
-              print(attributes);
-            },
-            render: (dynamic attributes) {
-              // You can render by attribute
-              return const PolygonOptions(
-                  borderColor: Colors.blueAccent,
-                  color: Colors.black12,
-                  borderStrokeWidth: 2);
-            },
-          ),
-          FeatureLayerOptions(
-            url:
-                "https://services8.arcgis.com/1p2fLWyjYVpl96Ty/arcgis/rest/services/Forest_Service_Recreation_Opportunities/FeatureServer/0",
-            geometryType: "point",
-            render: (dynamic attributes) {
-              // You can render by attribute
-              return Marker(
-                width: 30.0,
-                height: 30.0,
-                point: LatLng(47.2313, 39.7233),
-                builder: (ctx) => Container(color: Colors.red, width: 100, height: 100,),
-              );
-            },
-          ),
+          MarkerLayerOptions(markers: markers)
         ],
       ),
       bottomNavigationBar: const CustomBottomBar(),
