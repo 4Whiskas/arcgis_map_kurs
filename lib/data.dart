@@ -80,17 +80,6 @@ Future<void> fillMarkers() async {
                 child: IconButton(
                   icon: Image.asset(pointType.imagePath),
                   onPressed: () {
-                    Location loc = Location();
-                    loc.getLocation().then((curLoc) => {
-                          getRoute(LatLng(curLoc.latitude, curLoc.longitude),
-                                  pointType.coordinates)
-                              .then((route) => {
-                                    polylines.clear(),
-                                    polylines.add(Polyline(
-                                        points: route, color: Colors.blue))
-                                  })
-                        });
-
                     showBottomSheet(
                       context: context,
                       builder: (context) => Container(

@@ -9,11 +9,11 @@ Future<List<LatLng>> getRoute(LatLng startPoint, LatLng endPoint)async
   print(endPoint);
   var f = 'f=json&';
   var token = 'token=AAPKaf3085f2feb642ca9087fd3573644bdc_QsFicjZgUdoP70nVMEMCnuAOMycXXTrmkJvc9IrED0PMOvrUnnOqHWKw6LKz3S3&';
-  var stops = 'stops=${startPoint.latitude},${startPoint.longitude};${endPoint.latitude},${endPoint.longitude}&';
+  var stops = 'stops=${startPoint.latitude},${startPoint.longitude};${endPoint.latitude},${endPoint.longitude}';
   var startTimer = 'startTime=now&';
-  var rDir = 'returnDirections=false&';
+  var rDir = 'returnDirections=true&';
   var dirL = 'directionsLanguage=ru&';
-  var url = Uri.parse("https://route-api.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World/solve?"+f+token+stops+startTimer+rDir+dirL);
+  var url = Uri.parse("https://route-api.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World/solve?"+f+token+stops);
   var response = await http.get(url);
   //print(response.body);
   Map<String, dynamic> data = jsonDecode(response.body);
@@ -30,10 +30,12 @@ Future<List<LatLng>> getRoute(LatLng startPoint, LatLng endPoint)async
   List<dynamic> points = paths[0];
   //print(points);
   List<LatLng> route = [];
+  route.add(startPoint);
   points.forEach((element) {
     LatLng tempLatLng = LatLng(element[0],element[1]);
     route.add(tempLatLng);
   });
+  route.add(endPoint);
   //Map<String, dynamic> paths = geometry['paths'];
   //print(paths);
   //print(response.statusCode);
