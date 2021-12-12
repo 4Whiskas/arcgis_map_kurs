@@ -71,12 +71,12 @@ Future<void> fillMarkers() async {
       //print(pointType.coordinates);
       var tempMarker = Marker(
           point: pointType.coordinates,
-          height: 30,
-          width: 30,
+          height: 50,
+          width: 50,
           builder: (BuildContext context) {
             return SizedBox(
-                height: 30,
-                width: 30,
+                height: 50,
+                width: 50,
                 child: IconButton(
                   icon: Image.asset(pointType.imagePath),
                   onPressed: () {

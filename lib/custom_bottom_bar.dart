@@ -57,12 +57,7 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
               height: 50,
             ),
             label: "С"),
-        const BottomNavigationBarItem(
-            icon: Icon(
-              Icons.settings,
-              color: Colors.black,
-            ),
-            label: "l")
+
       ],
     );
   }
