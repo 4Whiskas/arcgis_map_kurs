@@ -1,13 +1,17 @@
 import 'dart:convert';
 import 'package:arcgis/points_list_item.dart';
+import 'package:arcgis/requests.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:location/location.dart';
 
 List<List<PointsListItem>> points = [[], [], [], []];
 List<Marker> markers = [];
+List<Polyline> polylines = [];
 
 void savePoints() async {
   List<List<Map<String, dynamic>>> data = [];
@@ -31,7 +35,7 @@ void savePoints() async {
   sh.setString('data', jsonData);
 }
 
-void loadPoints() async {
+Future<void> loadPoints() async {
   var sh = await SharedPreferences.getInstance();
   if (!sh.containsKey('data')) return;
   var jsonData = sh.getString('data');
@@ -60,7 +64,8 @@ void loadPoints() async {
   }
 }
 
-void fillMarkers() {
+Future<void> fillMarkers() async {
+  markers = [];
   for (var pointTypeList in points) {
     for (var pointType in pointTypeList) {
       //print(pointType.coordinates);
@@ -70,7 +75,31 @@ void fillMarkers() {
           width: 30,
           builder: (BuildContext context) {
             return SizedBox(
-                height: 30, width: 30, child: Image.asset(pointType.imagePath));
+                height: 30,
+                width: 30,
+                child: IconButton(
+                  icon: Image.asset(pointType.imagePath),
+                  onPressed: () {
+                    Location loc = Location();
+                    loc.getLocation().then((curLoc) => {
+                          getRoute(LatLng(curLoc.latitude, curLoc.longitude),
+                                  pointType.coordinates)
+                              .then((route) => {
+                                    polylines.clear(),
+                                    polylines.add(Polyline(
+                                        points: route, color: Colors.blue))
+                                  })
+                        });
+
+                    showBottomSheet(
+                      context: context,
+                      builder: (context) => Container(
+                          padding: EdgeInsets.all(10),
+                          height: 150,
+                          child: pointType),
+                    );
+                  },
+                ));
           });
       markers.add(tempMarker);
     }

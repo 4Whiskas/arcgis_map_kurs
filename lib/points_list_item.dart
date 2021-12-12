@@ -33,7 +33,7 @@ class PointsListItem extends StatelessWidget {
         mapController.move(coordinates, 16);
       },
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Image.asset(
@@ -41,9 +41,7 @@ class PointsListItem extends StatelessWidget {
             width: 30,
             height: 30,
           ),
-          const SizedBox(
-            width: 20,
-          ),
+
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -51,6 +49,7 @@ class PointsListItem extends StatelessWidget {
               Text(label),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.max,
                 children: [
                   Text(address),
                   const SizedBox(
@@ -59,9 +58,12 @@ class PointsListItem extends StatelessWidget {
                   Text(time)
                 ],
               ),
-              Text("desc")
+              Text("Тут будет описание точки")
             ],
-          )
+          ),
+          const SizedBox(
+            width: 20,
+          ),
         ],
       ),
     );
